@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns="http://www.w3.org/1999/xhtml"
+				   xmlns:f="http://xmlns.jcp.org/jsf/core"
+				   xmlns:h="http://xmlns.jcp.org/jsf/html"
+				   xmlns:jsf="http://xmlns.jcp.org/jsf">
+<h:head>
+	<title>Cadastro de Usuario</title>
+	<h:outputStylesheet name="/css/bootstrap.min.css"/>  
+	<style type="text/css">  
+table {  
+border-collapse: collapse;  
+width: 100%;  
+}  
+th, td {  
+text-align:left  ;  
+padding: 8px;  
+}  
+
+h1{
+color:#C71585;
+}
+tr:nth-child(even){background-color: #f2f2f8}  
+th {  
+background-color: #8B008B;  
+color: white;  
+}  
+</style>  
+</h:head>
+<h:body>
+<center>
+	<h:form id="formPrincipal">
+		<h:messages id="messages"
+			globalOnly="true"  
+			infoStyle="color:green;"  
+			warnStyle="color:yellow;"  
+			errorStyle="color:red;" 
+			/>
+		<h1>.:Cadastro de Usuario:.</h1>
+		<h:panelGrid id="pgPrincipal" columns="2" >
+			<h:outputLabel value="Nome: " />
+			<h:inputText id="itNome" value="#{crudController.usuario.pessoa.nome}" />
+			
+			<h:outputLabel value="Sobrenome:" />
+			<h:panelGroup>
+				<h:inputText 
+					id="sobrenome"
+					value="#{crudController.usuario.pessoa.sobrenome}"
+					required="true"
+					requiredMessage="O sobrenome deve ser informado."/>
+				<h:message for="ano" style="color:red"/>
+			</h:panelGroup>
+			
+			<h:outputLabel value="Data de Nascimento:" />
+			<h:panelGroup>
+				<input  
+					jsf:id="dataDeNasc" 
+					jsf:immediate="true"
+					type="date" 
+					jsf:value="#{crudController.usuario.dataDeNasc}">
+					<f:convertDateTime type="localDate" pattern="yyyy-MM-dd"/>
+				</input>
+			</h:panelGroup>
+			
+			<h:outputLabel value="CPF:" />
+			<h:panelGroup>
+					<h:inputText 
+					id="cpf"
+					value="#{crudController.usuario.cpf}"
+					required="true"
+					requiredMessage="O CPF deve ser informado."/>
+					<h:message for="cpf" style="color:red"/>
+				
+			</h:panelGroup>
+			
+			
+			<h:outputLabel value="Sexo:" />
+			<h:selectOneMenu value="#{crudController.usuario.sexo}">
+				<f:selectItem 
+					itemLabel="Selecione uma das opções ..."
+					/>
+
+				<f:selectItems 
+					var="obj" 
+					value="#{crudController.listaSexo}" 
+					itemLabel="#{obj.label}"
+					itemValue="#{obj}"/>
+			</h:selectOneMenu>
+			
+								
+			<h:outputLabel value="Rg:" />
+			<h:inputText value="#{crudController.usuario.registroG}"/>
+			
+			
+			<h:outputLabel value="Telefone:" />
+			<h:inputText value="#{crudController.usuario.telefone}"/>
+		</h:panelGrid>
+		<h:commandButton 
+			value="Incluir" 
+			actionListener="#{crudController.incluir}"
+			disabled="#{crudController.usuario.id!=null}">
+			<f:ajax execute="formPrincipal" render="messages pgPrincipal dataTable" />
+		</h:commandButton>
+			
+		<h:commandButton 
+			value="Alterar" 
+			actionListener="#{crudController.alterar}"
+			disabled="#{crudController.usuario.id==null}"
+			/>
+		<h:commandButton 
+			value="Excluir" 
+			actionListener="#{crudController.excluir}"
+			disabled="#{crudController.usuario.id==null}">
+			<f:ajax  render="formPrincipal" />
+		</h:commandButton>
+			
+		<h:commandButton 
+			value="Limpar" 
+			actionListener="#{crudController.limpar}">
+			<f:ajax  render="@all" />
+		</h:commandButton>
+
+		<h:dataTable 
+			id="dataTable"
+			value="#{crudController.listaUsuario}"
+			var="obj">
+			<h:column>
+				<f:facet name="header">Id</f:facet>
+				<h:outputLabel value="#{obj.id}"/>
+			</h:column>
+			
+			<h:column>
+				<f:facet name="header">Nome</f:facet>
+				<h:outputLabel value="#{obj.pessoa.nome}"/>
+			</h:column>
+		
+			<h:column>
+				<f:facet name="header">Sobrenome</f:facet>
+				<h:outputLabel value="#{obj.pessoa.sobrenome}"/>
+			</h:column>
+		
+			<h:column>
+				<f:facet name="header">Data de Nascimento</f:facet>
+				<h:outputLabel value="#{obj.dataDeNasc}">
+					<f:convertDateTime type="localDate" pattern="dd/MM/yyyy"/>
+				</h:outputLabel>
+			</h:column>
+		
+			<h:column>
+				<f:facet name="header">CPF</f:facet>
+				<h:outputLabel value="#{obj.cpf}"/>
+			</h:column>
+			
+			<h:column>
+				<f:facet name="header">Sexo</f:facet>
+				<h:outputLabel value="#{obj.sexo.label}"/>
+			</h:column>
+			
+			<h:column>
+				<f:facet name="header">Rg</f:facet>
+				<h:outputLabel value="#{obj.registroG}"/>
+			</h:column>
+			
+			<h:column>
+				<f:facet name="header">Telefone</f:facet>
+				<h:outputLabel value="#{obj.telefone}"/>
+			</h:column>
+		
+			
+			<h:column>
+				<f:facet name="header">Ação</f:facet>
+				<h:commandButton  
+					value="Editar"
+					actionListener="#{crudController.editar(obj)}" >
+					<f:ajax execute="@this" render="@form"  />
+				</h:commandButton>
+				<h:commandButton 
+					value="Excluir"
+					actionListener="#{crudController.excluir(obj)}"/>
+			</h:column>
+		
+		</h:dataTable>
+	</h:form>
+	</center>
+</h:body>
+</html>
